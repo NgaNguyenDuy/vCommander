@@ -1,0 +1,122 @@
+#!/usr/bin/env node
+
+var program = require('commander'),
+    mkdirp = require('mkdirp'),
+    fs = require('fs'),
+    path = require('path'),
+    pkg = require('../package.json'),
+    readline = require('readline'),
+    version = pkg.version;
+
+// var rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout
+// });
+
+
+
+program
+    .version(version)
+    .usage('[options] [dir]')
+    .option('-d, --mongodb', 'Using mongodb for project (default to mongodb)')
+    .option('    --redis', 'Using redis db.')
+    .option('    --elasticsearch', 'Apply elasticsearch db')
+    .option('    --force', 'force create server');
+
+program.on('--help', function() {
+    console.log('  Example: ');
+    console.log('');
+    console.log('     $ vsoft -d redis socialApp');
+    console.log('     $ vsoft -d elasticsearch eTimes');
+    console.log('');
+});
+//    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
+program.parse(process.argv);
+
+// console.log('  - %s cheese', program.cheese);
+
+
+var despath = program.args.shift() || '.';
+
+var app_name = path.basename(path.resolve(despath));
+
+
+program.db = 'mongodb';
+if(program.redis) program.db = 'redis';
+if(program.elasticsearch) program.db = 'elasticsearch';
+
+// console.log(program.db);
+
+
+(function createApp(path) {
+    emptyDir(path, function(empty) {
+        if(empty || program.force) {
+            createServerAt(path);
+        } else {
+            abort('Aborting');
+            // program.confirm('des not empty', function(ok) {
+            //     if(ok) {
+            //         process.stdin.destroy();
+            //         createServerAt(path);
+                    
+            //     } else {
+            //         abort('Aborting');
+            //     }
+            // });
+        }
+    });
+})(despath);
+
+function createServerAt(path) {
+    console.log('create server at ' + path + ' and using ' + program.db);
+};
+
+
+function emptyDir(path, fn) {
+    fs.readdir(path, function(err, file) {
+        if(err && 'ENOENT' != err.code) throw err;
+        fn(!file || !file.length);
+    });
+};
+
+
+
+// rl.question("What do you think of node.js? ", function(answer) {
+//   // TODO: Log the answer in a database
+//   console.log("Thank you for your valuable feedback:", answer);
+
+//   rl.close();
+// });
+
+
+// function promptMultiLine(str, fn) {
+//     var buf = [];
+//     console.log(str);
+//     process.stdin.setEncoding('utf8');
+//     process.stdin.on('data', function(val) {
+//         if('\n' == val || '\r\n' == val) {
+//             fn(buf.join('\n'));
+//         } else {
+//             buf.push(val);
+//         }
+//     }).resume();
+// }
+
+// promptMultiLine('hehe', function(data) {
+//     console.log(data);
+// });
+
+// function prompt (str, fn) {
+
+// }
+
+// function confirm(str, fn) {
+//     // rl.question(str, function(answer) {
+        
+//     // }) ;
+// };
+
+function abort(str) {
+    console.error(str);
+    process.exit(1);
+}
