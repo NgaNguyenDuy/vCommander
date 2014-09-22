@@ -22,6 +22,6 @@
   "homepage": "https://github.com/NgaNguyenDuy/vCommander",
   "dependencies": {
     "commander": "^2.3.0",
-    "mkdir": "0.0.2"
+    "mkdirp": "^0.5.0"
   }
 }
