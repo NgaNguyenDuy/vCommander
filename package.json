@@ -1,0 +1,23 @@
+{
+  "name": "vCommander",
+  "version": "0.0.1",
+  "description": "Command for vframework",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NgaNguyenDuy/vCommander.git"
+  },
+  "keywords": [
+    "commander",
+    "framework"
+  ],
+  "author": "NgaNguyenDuy, Thinhit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NgaNguyenDuy/vCommander/issues"
+  },
+  "homepage": "https://github.com/NgaNguyenDuy/vCommander"
+}
