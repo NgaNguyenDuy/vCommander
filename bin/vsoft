@@ -18,14 +18,13 @@ var program = require('commander'),
 program
     .version(version)
     .usage('[options] [dir]')
-    .option('-d, --mongodb', 'Using mongodb for project (default to mongodb)')
-    .option('    --redis', 'Using redis db.')
-    .option('    --elasticsearch', 'Apply elasticsearch db')
-    .option('    --force', 'force create server');
+    .option('-d, --database <database type>', 'Using mongodb for project (default to mongodb)')
+    .option('    --force', 'force create server on non-empty server');
 
 program.on('--help', function() {
     console.log('  Example: ');
     console.log('');
+    console.log('     $ vsoft createServer');
     console.log('     $ vsoft -d redis socialApp');
     console.log('     $ vsoft -d elasticsearch eTimes');
     console.log('');
@@ -38,14 +37,15 @@ program.parse(process.argv);
 
 var despath = program.args.shift() || '.';
 
+
 var app_name = path.basename(path.resolve(despath));
 
 
 program.db = 'mongodb';
-if(program.redis) program.db = 'redis';
-if(program.elasticsearch) program.db = 'elasticsearch';
 
-// console.log(program.db);
+if(program.database === 'redis') program.db ='redis';
+
+if(program.database === 'elasticsearch') program.db = 'elasticsearch';
 
 
 (function createApp(path) {
@@ -68,9 +68,60 @@ if(program.elasticsearch) program.db = 'elasticsearch';
 })(despath);
 
 function createServerAt(path) {
-    console.log('create server at ' + path + ' and using ' + program.db);
+    console.log();
+    process.on('exit', function() {
+        console.log();
+        console.log('    To install dependencies:');
+        console.log('      $ cd %s && npm install', path);
+        console.log();
+        console.log('    Run the app: ');
+        console.log('      $ DEBUG=' + app_name + ' npm start');
+        console.log();
+    });
+    
+    mkdir(path, function() {
+        write(path + '/package.json', JSON.stringify(pkgj, null, 2));
+        write(path + '/config.json', JSON.stringify(cfg, null, 2));
+        mkdir(path + '/boot');
+        mkdir(path + '/controller');
+        mkdir(path + '/models');
+    });
+    
+
+    // console.log('create server at ' + path + ' and using ' + program.db.main);
 };
 
+
+var pkgj = {
+    name : app_name,
+    version: '0.0.1',
+    private: true,
+    scripts: {
+        start: 'node server.js'
+    },
+    dependencies: {
+        'express' : '~4.9.0'
+    }
+};
+
+var cfg = {
+    host: 'localhost',
+    port: process.env.PORT || 9009
+};
+
+
+function mkdir(path, fn) {
+    mkdirp(path, 0755, function(err) {
+        if(err) throw err;
+        console.log(' \033[36mcreate\033[0m : ' + path);
+        fn && fn();
+    });
+}
+
+function write(path, str, mode) {
+    fs.writeFile(path, str, {mode: mode || 0666});
+    console.log(' \x1b[36mcreate\x1b[0m : ' + path);
+}
 
 function emptyDir(path, fn) {
     fs.readdir(path, function(err, file) {
