@@ -1,5 +1,5 @@
 {
-    "name": "vCommander",
+    "name": "vcommander",
     "version": "0.0.2",
     "description": "Command for vframework",
     "main": "index.js",
