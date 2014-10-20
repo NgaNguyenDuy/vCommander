@@ -18,15 +18,12 @@ var program = require('commander'),
 program
     .version(version)
     .usage('[options] [dir]')
-    .option('-d, --database <database type>', 'Using mongodb for project (default to mongodb)')
     .option('    --force', 'force create server on non-empty server');
 
 program.on('--help', function() {
     console.log('  Example: ');
     console.log('');
     console.log('     $ vsoft createServer');
-    console.log('     $ vsoft -d redis socialApp');
-    console.log('     $ vsoft -d elasticsearch eTimes');
     console.log('');
 });
 //    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
@@ -39,14 +36,6 @@ var despath = program.args.shift() || '.';
 
 
 var app_name = path.basename(path.resolve(despath));
-
-
-program.db = 'mongodb';
-
-if(program.database === 'redis') program.db ='redis';
-
-if(program.database === 'elasticsearch') program.db = 'elasticsearch';
-
 
 (function createApp(path) {
     emptyDir(path, function(empty) {
@@ -67,6 +56,13 @@ if(program.database === 'elasticsearch') program.db = 'elasticsearch';
     });
 })(despath);
 
+
+var auth = load_template('boot/auth.js');
+var root = load_template('boot/root.js');
+var explorer = load_template('boot/explorer.js');
+var restapi = load_template('boot/rest-api.js');
+var app = fs.readFileSync(__dirname + '/../templates/app.js', 'utf-8');
+
 function createServerAt(path) {
     console.log();
     process.on('exit', function() {
@@ -80,15 +76,54 @@ function createServerAt(path) {
     });
     
     mkdir(path, function() {
+        write(path + '/server.js', app);
         write(path + '/package.json', JSON.stringify(pkgj, null, 2));
         write(path + '/config.json', JSON.stringify(cfg, null, 2));
-        mkdir(path + '/boot');
-        mkdir(path + '/controller');
-        mkdir(path + '/models');
+        write(path + '/datasources.json', JSON.stringify(ds, null, 2));
+        write(path + '/model-config.json', JSON.stringify(modelCfg, null, 2));
+        mkdir(path + '/boot', function(){
+            write(path + '/boot/auth.js', auth);
+            write(path + '/boot/root.js', root);
+            write(path + '/boot/explorer.js', explorer);
+            write(path + '/boot/rest-api.js', restapi);
+        });
     });
-    
+};
 
-    // console.log('create server at ' + path + ' and using ' + program.db.main);
+
+var ds = {
+    "db": {
+        "name": "db",
+        "connector": "memory"
+    }
+};
+
+var modelCfg = {
+    "_meta": {
+        "sources": [
+            "../common/models",
+            "./models"
+        ]
+    },
+    "User": {
+        "dataSource": "db"
+    },
+    "AccessToken": {
+        "dataSource": "db",
+        "public": false
+    },
+    "ACL": {
+        "dataSource": "db",
+        "public": false
+    },
+    "RoleMapping": {
+        "dataSource": "db",
+        "public": false
+    },
+    "Role": {
+        "dataSource": "db",
+        "public": false
+    }
 };
 
 
@@ -100,13 +135,20 @@ var pkgj = {
         start: 'node server.js'
     },
     dependencies: {
-        'express' : '~4.9.0'
+        'express' : '~4.9.0',
+        'errorhandler': '^1.2.2',
+        'loopback-datasource-juggler': '^2.10.1',
+        'serve-favicon': '^2.1.6',
+        'vf': '*',
+        'vsoft-boot': '0.x'
     }
 };
 
 var cfg = {
-    host: 'localhost',
-    port: process.env.PORT || 9009
+    'restApiRoot': '/api',
+    'host': '0.0.0.0',
+    'port': 8888,
+    'url': 'http://localhost:8888'
 };
 
 
@@ -129,6 +171,10 @@ function emptyDir(path, fn) {
         fn(!file || !file.length);
     });
 };
+
+function load_template(name) {
+    return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
+}
 
 
 
