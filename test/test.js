@@ -10,3 +10,10 @@ describe('Array test', function() {
         });
     });
 });
+
+describe('No argument', function() {
+    it('should return 1 exit code when no argument', function(done) {
+        
+        done();
+    });
+});
