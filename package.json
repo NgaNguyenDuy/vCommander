@@ -1,11 +1,14 @@
 {
     "name": "vcommander",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Command for vframework",
     "main": "index.js",
     "scripts": {
         "test": "mocha -R spec --check-leaks test/",
         "test-travis": "mocha -R spec --check-leaks test/"
+    },
+    "bin": {
+        "vsoft": "./bin/vsoft"
     },
     "repository": {
         "type": "git",
