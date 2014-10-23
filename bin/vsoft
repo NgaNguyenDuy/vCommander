@@ -5,7 +5,7 @@ var program = require('commander'),
     fs = require('fs'),
     path = require('path'),
     pkg = require('../package.json'),
-    readline = require('readline'),
+    colors = require('colors'),
     version = pkg.version;
 
 // var rl = readline.createInterface({
@@ -47,7 +47,7 @@ var app_name = path.basename(path.resolve(despath));
             //     if(ok) {
             //         process.stdin.destroy();
             //         createServerAt(path);
-                    
+
             //     } else {
             //         abort('Aborting');
             //     }
@@ -74,13 +74,14 @@ function createServerAt(path) {
         console.log('      $ DEBUG=' + app_name + ' npm start');
         console.log();
     });
-    
+
     mkdir(path, function() {
         write(path + '/server.js', app);
         write(path + '/package.json', JSON.stringify(pkgj, null, 2));
         write(path + '/config.json', JSON.stringify(cfg, null, 2));
         write(path + '/datasources.json', JSON.stringify(ds, null, 2));
         write(path + '/model-config.json', JSON.stringify(modelCfg, null, 2));
+        mkdir(path + '/common/models');
         mkdir(path + '/boot', function(){
             write(path + '/boot/auth.js', auth);
             write(path + '/boot/root.js', root);
@@ -137,7 +138,7 @@ var pkgj = {
     dependencies: {
         'express' : '~4.9.0',
         'errorhandler': '^1.2.2',
-        'loopback-datasource-juggler': '^2.10.1',
+        'vsoft-datasource-juggler': '^2.10.1',
         'serve-favicon': '^2.1.6',
         'vf': '*',
         'vsoft-boot': '0.x'
@@ -155,14 +156,16 @@ var cfg = {
 function mkdir(path, fn) {
     mkdirp(path, 0755, function(err) {
         if(err) throw err;
-        console.log(' \033[36mcreate\033[0m : ' + path);
+        // console.log(' \033[36mcreate\033[0m : ' + path);
+        console.log(' create : '.bold.blue + path);
         fn && fn();
     });
 }
 
 function write(path, str, mode) {
     fs.writeFile(path, str, {mode: mode || 0666});
-    console.log(' \x1b[36mcreate\x1b[0m : ' + path);
+    // console.log(' \x1b[36mcreate\x1b[0m : ' + path);
+    console.log(' create : '.bold.blue + path);
 }
 
 function emptyDir(path, fn) {
@@ -209,7 +212,7 @@ function load_template(name) {
 
 // function confirm(str, fn) {
 //     // rl.question(str, function(answer) {
-        
+
 //     // }) ;
 // };
 
