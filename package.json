@@ -1,31 +1,32 @@
 {
-    "name": "vcommander",
-    "version": "0.0.3",
-    "description": "Command for vframework",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha -R spec --check-leaks test/",
-        "test-travis": "mocha -R spec --check-leaks test/"
-    },
-    "bin": {
-        "vsoft": "./bin/vsoft"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/NgaNguyenDuy/vCommander.git"
-    },
-    "keywords": [
-        "commander",
-        "framework"
-    ],
-    "author": "NgaNguyenDuy, Thinhit",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/NgaNguyenDuy/vCommander/issues"
-    },
-    "homepage": "https://github.com/NgaNguyenDuy/vCommander",
-    "dependencies": {
-        "commander": "^2.3.0",
-        "mkdirp": "^0.5.0"
-    }
+  "name": "vcommander",
+  "version": "0.0.4",
+  "description": "Command for vframework",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec --check-leaks test/",
+    "test-travis": "mocha -R spec --check-leaks test/"
+  },
+  "bin": {
+    "vsoft": "./bin/vsoft"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NgaNguyenDuy/vCommander.git"
+  },
+  "keywords": [
+    "commander",
+    "framework"
+  ],
+  "author": "NgaNguyenDuy, Thinhit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NgaNguyenDuy/vCommander/issues"
+  },
+  "homepage": "https://github.com/NgaNguyenDuy/vCommander",
+  "dependencies": {
+    "colors": "^1.0.3",
+    "commander": "^2.3.0",
+    "mkdirp": "^0.5.0"
+  }
 }
