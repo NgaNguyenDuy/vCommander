@@ -81,9 +81,9 @@ function createServerAt(path) {
         write(path + '/config.json', JSON.stringify(cfg, null, 2));
         write(path + '/datasources.json', JSON.stringify(ds, null, 2));
         write(path + '/model-config.json', JSON.stringify(modelCfg, null, 2));
-        mkdir(path + '/common/models');
+        mkdir(path + '/models');
         mkdir(path + '/boot', function(){
-            write(path + '/boot/auth.js', auth);
+            write(path + '/boot/authenticate.js', auth);
             write(path + '/boot/root.js', root);
             write(path + '/boot/explorer.js', explorer);
             write(path + '/boot/rest-api.js', restapi);

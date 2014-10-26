@@ -1,6 +1,6 @@
 {
   "name": "vcommander",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Command for vframework",
   "main": "index.js",
   "scripts": {
